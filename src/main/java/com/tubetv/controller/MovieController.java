@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tubetv/movie")
@@ -30,6 +31,19 @@ public class MovieController {
     public ResponseEntity<MovieResponse> save(@RequestBody MovieRequest movieRequest) {
         Movie savedMovie = movieService.save(MovieMapper.toMovie(movieRequest));
         return ResponseEntity.ok(MovieMapper.toMovieResponse(savedMovie));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MovieResponse> findById(@PathVariable Long id) {
+         return movieService.findById(id)
+                 .map(movie -> ResponseEntity.ok(MovieMapper.toMovieResponse(movie)))
+                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        movieService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
