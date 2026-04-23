@@ -33,6 +33,32 @@ public class MovieService {
         return movieRepository.findById(id);
     }
 
+    public Optional<Movie> update(Long movieId, Movie movie) {
+        Optional<Movie> optMovie = movieRepository.findById(movieId);
+        if (optMovie.isPresent()) {
+            List<Category> categories = this.findCategories(movie.getCategories());
+            List<Streaming> streamings = this.findStreamings(movie.getStreamings());
+
+            Movie movieUpdated = optMovie.get(); // caso exista esse filme no BD, o opt sera alimentado com todos os atributos para fazer o update
+            movieUpdated.setTitle(movie.getTitle());
+            movieUpdated.setDescription(movie.getDescription());
+            movieUpdated.setReleaseDate(movie.getReleaseDate());
+            movieUpdated.setRating(movie.getRating());
+
+            movieUpdated.getCategories().clear();
+            movieUpdated.getCategories().addAll(categories);
+
+            movieUpdated.getStreamings().clear();
+            movieUpdated.getStreamings().addAll(streamings);
+
+            movieRepository.save(movieUpdated);
+            return Optional.of(movieUpdated);
+            // No fim ele salva o que foi mudado e retorno como optional
+
+        }
+        return Optional.empty();
+    }
+
     public void delete(Long id) {
         movieRepository.deleteById(id);
     }
