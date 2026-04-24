@@ -59,6 +59,10 @@ public class MovieService {
         return Optional.empty();
     }
 
+    public List<Movie> findByCategory(Long category) {
+        return movieRepository.findMovieByCategoriesId(category);
+    }
+
     public void delete(Long id) {
         movieRepository.deleteById(id);
     }
@@ -70,7 +74,7 @@ public class MovieService {
         }
         return categoriesFound;
         /*
-        * Este metodo vai garantir que o ID da categorie passada na coluna 'categories' na tabela 'movie' exista na tabela 'category'
+        * Este metodo vai garantir que o ID da category passada na coluna 'categories' na tabela 'movie' exista na tabela 'category'
         * criando um list de category, iterando sobre toda a lista passada como parametro e testando se ela esta presente, caso esteja a lista categoriesFound
         * será alimentada
         * */

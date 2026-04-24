@@ -46,6 +46,13 @@ public class MovieController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<MovieResponse>> findByCategory(@RequestParam Long category) {
+        return ResponseEntity.ok(movieService.findByCategory(category).stream()
+                .map(MovieMapper::toMovieResponse)
+                .toList());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         movieService.delete(id);
