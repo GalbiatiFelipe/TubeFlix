@@ -46,7 +46,11 @@ public class StreamingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        streamingService.delete(id);
-        return ResponseEntity.noContent().build();
+        Optional<Streaming> optional = streamingService.findById(id);
+        if (optional.isPresent()) {
+            streamingService.delete(id);
+            return ResponseEntity.noContent().build();
+        }
+        return  ResponseEntity.notFound().build();
     }
 }

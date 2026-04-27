@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tubetv/category")
@@ -58,7 +59,11 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        Optional<Category> category = categoryService.findCategoryById(id);
+        if (category.isPresent()) {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.noContent().build();
+        }
+        return  ResponseEntity.notFound().build();
     }
 }
