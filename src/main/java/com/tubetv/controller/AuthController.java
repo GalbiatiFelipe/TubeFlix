@@ -6,12 +6,14 @@ import com.tubetv.controller.request.UserRequest;
 import com.tubetv.controller.response.LoginResponse;
 import com.tubetv.controller.response.UserResponse;
 import com.tubetv.entity.User;
+import com.tubetv.exception.UsernameOrPasswordInvalidException;
 import com.tubetv.mapper.UserMapper;
 import com.tubetv.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +38,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
-        // Faz a busca por baixo dos panos do usuario e se existir passa para o 'authentication'
-        Authentication authentication = authenticationManager.authenticate(userAndPass);
-        User user = (User) authentication.getPrincipal();
-        // utilizamos um cast pois sabemos que 'authentication' é um User pois no 'AuthService' o retorno do meotodo é um UserDetail, que portanto sai da entidade User"
-        String token = tokenService.generateToken(user); //passamos o usuario encontrado para gerar o token da maneira que configuramos na tokenService.
+        try {
+            UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
+            // Faz a busca por baixo dos panos do usuario e se existir passa para o 'authentication'
+            Authentication authentication = authenticationManager.authenticate(userAndPass);
+            User user = (User) authentication.getPrincipal();
+            // utilizamos um cast pois sabemos que 'authentication' é um User pois no 'AuthService' o retorno do meotodo é um UserDetail, que portanto sai da entidade User"
+            String token = tokenService.generateToken(user); //passamos o usuario encontrado para gerar o token da maneira que configuramos na tokenService.
 
-        return ResponseEntity.ok(new LoginResponse(token));
+            return ResponseEntity.ok(new LoginResponse(token));
+        } catch (BadCredentialsException e) {
+            throw new UsernameOrPasswordInvalidException("Usuário ou senha inválido");
+        }
     }
 
 }

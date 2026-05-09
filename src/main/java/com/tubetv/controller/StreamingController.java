@@ -6,6 +6,7 @@ import com.tubetv.controller.response.StreamingResponse;
 import com.tubetv.entity.Streaming;
 import com.tubetv.mapper.StreamingMapper;
 import com.tubetv.service.StreamingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class StreamingController {
     }
 
     @PostMapping
-    public ResponseEntity<StreamingResponse> saveCategory(@RequestBody StreamingRequest streamingRequest) {
+    public ResponseEntity<StreamingResponse> saveCategory(@Valid @RequestBody StreamingRequest streamingRequest) {
         Streaming newStreaming = StreamingMapper.toStreaming(streamingRequest);
         Streaming savedStreaming = streamingService.save(newStreaming);
         return  ResponseEntity.status(HttpStatus.CREATED).body(StreamingMapper.toStreamingResponse(savedStreaming));

@@ -1,5 +1,6 @@
 package com.tubetv.config;
 
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // toda chamada que ocorrer será verificada se vem de alguém válida, ou logado
                 .authorizeHttpRequests(authorize -> authorize
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/tubetv/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tubetv/auth/login").permitAll()
                         .anyRequest().authenticated()
