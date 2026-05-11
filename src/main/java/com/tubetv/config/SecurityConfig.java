@@ -34,6 +34,8 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/tubetv/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tubetv/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger/**").permitAll() //permissoes para o swagger
                         .anyRequest().authenticated()
                 )
                 /*
