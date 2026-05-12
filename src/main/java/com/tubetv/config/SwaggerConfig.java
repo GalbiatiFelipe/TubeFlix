@@ -1,5 +1,7 @@
 package com.tubetv.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -7,6 +9,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
+)
+// informações para a @SecurityRequirement.
 public class SwaggerConfig {
 
     //Um método para pegar as informações e entregar para o swagger usar, com isso os dois endpoints criados no 'application' ja podem ser vistos
