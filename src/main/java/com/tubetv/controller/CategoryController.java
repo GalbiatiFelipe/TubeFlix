@@ -2,69 +2,51 @@ package com.tubetv.controller;
 
 import com.tubetv.controller.request.CategoryRequest;
 import com.tubetv.controller.response.CategoryResponse;
-import com.tubetv.entity.Category;
-import com.tubetv.mapper.CategoryMapper;
-import com.tubetv.service.CategoryService;
+import com.tubetv.controller.response.MovieResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController
-@RequestMapping("/tubetv/category")
-@RequiredArgsConstructor
-public class CategoryController {
+@Tag(name = "Category", description = "Recurso responsável por gerenciar a tabela de categorias.")
+public interface CategoryController {
 
-    /*
-    * injeção de dependencia
-    * -Com anotação @Autowired
-    * -Usando Lombok, com anotação @RequiredArgsConstructor
-    * -Criando um construtor para o atributo
-    * */
-    private final CategoryService categoryService;
+    @Operation(summary = "Listar categorias", description = "Método responsavel por listar todas as categorias cadastradas.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "Listando todos as categorias",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryResponse.class))))
+    ResponseEntity<List<CategoryResponse>> findAllCategories();
 
-    @GetMapping
-    public ResponseEntity<List<CategoryResponse>> findAllCategories() {
-        List<CategoryResponse> categories = categoryService.findAll()
-                .stream()
-                .map(CategoryMapper::toCategoryResponse)
-                .toList();
 
-        return ResponseEntity.ok(categories);
+    @Operation(summary = "Salvar categorias", description = "Método responsável por salvar novas categorias no banco de dados.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "201", description = "Categoria salva.",
+            content = @Content(schema = @Schema(implementation = CategoryResponse.class)))
+    ResponseEntity<CategoryResponse> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest);
 
-    }
 
-    @PostMapping
-    public ResponseEntity<CategoryResponse> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
-        Category newCategory = CategoryMapper.toCategory(categoryRequest);
-        Category savedCategory = categoryService.saveCategory(newCategory);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(CategoryMapper.toCategoryResponse(savedCategory));
-    }
+    @Operation(summary = "Buscar categoria por ID", description = "Método responsável por buscar as categorias pelo ID especifico.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "Categoria encontrada",
+            content = @Content(schema = @Schema(implementation = MovieResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content())
+    ResponseEntity<CategoryResponse> findCategoryById(@PathVariable Long id);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> findCategoryById(@PathVariable Long id) {
-        return categoryService.findCategoryById(id)
-                .map(category -> ResponseEntity.ok(CategoryMapper.toCategoryResponse(category)))
-                .orElse(ResponseEntity.notFound().build());
 
-        /*Optional<Category> optCategory = categoryService.findCategoryById(id);
-        if (optCategory.isPresent()) {
-            return ResponseEntity.ok(CategoryMapper.toCategoryResponse(optCategory.get()));
-        }
-        return ResponseEntity.notFound().build();*/
-    }
+    @Operation(summary = "Deleta categoria por ID", description = "Método responsável por deletar uma categoria do banco de dados de acordo com o ID",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "204", description = "Categoria deletada com sucesso",
+            content = @Content(schema = @Schema(implementation = MovieResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content())
+    ResponseEntity<Void> deleteCategory(@PathVariable Long id);
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        Optional<Category> category = categoryService.findCategoryById(id);
-        if (category.isPresent()) {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.noContent().build();
-        }
-        return  ResponseEntity.notFound().build();
-    }
 }
