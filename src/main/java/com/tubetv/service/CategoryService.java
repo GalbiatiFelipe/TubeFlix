@@ -25,11 +25,24 @@ public class CategoryService {
     }
 
     public Category saveCategory(Category category) {
+        category.setId(categoryRepository.saveAndFlush(category).getId());
         return categoryRepository.save(category);
     }
 
     public Optional<Category> findCategoryById(Long id) {
         return categoryRepository.findById(id);
+    }
+
+    public Optional<Category> updateCategory(Long categoryId, Category category) {
+        Optional<Category> optlCategory = categoryRepository.findById(categoryId);
+        if (optlCategory.isPresent()) {
+            Category updatedCategory = optlCategory.get();
+            updatedCategory.setName(category.getName());
+
+            categoryRepository.save(updatedCategory);
+            return Optional.of(updatedCategory);
+        }
+        return Optional.empty();
     }
 
     public void deleteCategory(Long id) {

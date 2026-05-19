@@ -58,6 +58,15 @@ public class CategoryControllerImpl implements CategoryController {
         return ResponseEntity.notFound().build();*/
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryRequest categoryRequest) {
+        Category updatedCategory = CategoryMapper.toCategory(categoryRequest);
+        return categoryService.updateCategory(id, updatedCategory)
+                .map(category -> ResponseEntity.ok(CategoryMapper.toCategoryResponse(updatedCategory)))
+                .orElse(ResponseEntity.notFound().build());
+
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         Optional<Category> category = categoryService.findCategoryById(id);

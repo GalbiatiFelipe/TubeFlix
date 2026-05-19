@@ -45,6 +45,13 @@ public class StreamingControllerImpl implements StreamingController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<StreamingResponse> update(@PathVariable Long id, @RequestBody StreamingRequest streamingRequest) {
+        return streamingService.update(id, StreamingMapper.toStreaming(streamingRequest))
+                .map(streaming -> ResponseEntity.ok(StreamingMapper.toStreamingResponse(streaming)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         Optional<Streaming> optional = streamingService.findById(id);

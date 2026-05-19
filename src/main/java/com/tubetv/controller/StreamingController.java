@@ -1,7 +1,6 @@
 package com.tubetv.controller;
 
 import com.tubetv.controller.request.StreamingRequest;
-import com.tubetv.controller.response.CategoryResponse;
 import com.tubetv.controller.response.MovieResponse;
 import com.tubetv.controller.response.StreamingResponse;
 import io.swagger.v3.oas.annotations.Operation;
