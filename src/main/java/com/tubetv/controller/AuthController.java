@@ -40,7 +40,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
             UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
-            // Faz a busca por baixo dos panos do usuario e se existir passa para o 'authentication'
+            // Utiliza o metodo da AuthService por baixo dos panos para fazer a pesquisa e autenticar o loginRequest
             Authentication authentication = authenticationManager.authenticate(userAndPass);
             User user = (User) authentication.getPrincipal();
             // utilizamos um cast pois sabemos que 'authentication' é um User pois no 'AuthService' o retorno do meotodo é um UserDetail, que portanto sai da entidade User"

@@ -18,6 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
+    /*
+    * implements UserDetails: excencial para fazer configurações do spring security para o usuário
+    * */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

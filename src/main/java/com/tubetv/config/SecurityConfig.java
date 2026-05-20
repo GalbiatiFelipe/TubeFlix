@@ -18,6 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+/*
+* @Configuration: diz que a classe é para configurações.
+*
+* @EnableWebSecurity: habilita o sistema que gerencia os metodos que serão criados
+* para configurar o spring security.
+* */
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
@@ -25,9 +31,13 @@ public class SecurityConfig {
     @Bean //Diz que o spring precisa gerenciar este método, pois é o metodo que faz a segurança
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) //Desabilita a configuração padrão do spring, ja que precisamos configurar a propria
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // toda chamada que ocorrer será verificada se vem de alguém válida, ou logado
+                /* csrf.disable(): Desabilita a configuração padrão do spring.
+                *
+                * SessionCreationPolicy.STATELESS: toda chamada para a aplicação deve ser verificada, se vem de uma origem válida (ex: usuário logado),
+                * ou se a chamada está sem validação.
+                * */
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/tubetv/auth/register").permitAll()
@@ -37,11 +47,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 /*
-                * requestMatchers:
-                *  autoriza o endpoint para que todos possam fazer a requisição http
-                * anyRequest:
-                *  seta uma configuração para todos os outros request não especificados, neste caso 'authenticated()'
-                *  requer que todos sejam autenticados para serem aceitos
+                * requestMatchers
+                *  .permitAll(): autoriza o endpoint para que todos possam fazer a requisição http.
+                *
+                * anyRequest: seta uma configuração para todos os outros request não especificados, neste caso 'authenticated()'
+                * requer que todos sejam autenticados para serem aceitos.
+                *
                 * */
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -56,6 +67,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+        /*
+        * new BCryptPasswordEncoder(): quando houver uma chamada para 'passwordEnconder' o retorno será este
+        * */
     }
+
 
 }
