@@ -18,7 +18,10 @@ public class TokenService {
     private String secret; // a 'secret' será implementada no 'application.propertie' para ficar mais seguro
 
     public String generateToken(User user) {
-        Algorithm algorithm = Algorithm.HMAC256(secret); // algoritimo com a 'palavra-secreta' que vai ser passado no '.sign'
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        /*
+        * Algorithm.HMAC256(secret): algoritimo de criptografia com a 'palavra-secreta' que vai ser passado no '.sign'
+        * */
 
         return JWT.create()
                 .withSubject(user.getEmail())
@@ -29,7 +32,7 @@ public class TokenService {
                 .withIssuer("API TubeTv") // quem gerou este token
                 /*
                 * Formas de pegar informações pelo token e configurar as informações de login
-                * E no fim criptografa e retorna o token
+                * e depois criptografa e retorna o token
                 * */
                 .sign(algorithm);
     }
