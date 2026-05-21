@@ -45,6 +45,7 @@ public class CategoryControllerImpl implements CategoryController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(CategoryMapper.toCategoryResponse(savedCategory));
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> findCategoryById(@PathVariable Long id) {
         return categoryService.findCategoryById(id)

@@ -41,6 +41,13 @@ public interface CategoryController {
     @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content())
     ResponseEntity<CategoryResponse> findCategoryById(@PathVariable Long id);
 
+    @Operation(summary = "Atualizar Categoria", description = "Método responsável por atualizar dados de categoria",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "Categoria alterada com sucesso",
+            content = @Content(schema = @Schema(implementation = CategoryResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Categoria não encontrada", content = @Content())
+    ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryRequest categoryRequest);
+
 
     @Operation(summary = "Deleta categoria por ID", description = "Método responsável por deletar uma categoria do banco de dados de acordo com o ID",
             security = @SecurityRequirement(name = "bearerAuth"))

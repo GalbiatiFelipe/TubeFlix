@@ -41,6 +41,13 @@ public interface StreamingController {
     @ApiResponse(responseCode = "404", description = "Serviço de streaming não encontrado", content = @Content())
     ResponseEntity<StreamingResponse> findById(@PathVariable Long id);
 
+    @Operation(summary = "Alterar serviço de Streaming", description = "Método responsável por atualizar dados da tabela streaming",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "Serviço de streaming alterado com sucesso",
+            content = @Content(schema = @Schema(implementation = StreamingResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Serviço de streaming não encontrado", content = @Content())
+    ResponseEntity<StreamingResponse> update(@PathVariable Long id, @RequestBody StreamingRequest streamingRequest);
+
 
     @Operation(summary = "Deleta serviço de streaming por ID", description = "Método responsável por deletar um serviço de streaming do banco de dados de acordo com o ID",
             security = @SecurityRequirement(name = "bearerAuth"))
